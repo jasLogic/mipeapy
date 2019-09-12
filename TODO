@@ -1,0 +1,4 @@
+- setup.py
+- everything except GPIO
+- documentation
+- examples
