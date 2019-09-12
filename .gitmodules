@@ -1,0 +1,3 @@
+[submodule "lib/mipea"]
+	path = lib/mipea
+	url = https://github.com/jasLogic/mipea
