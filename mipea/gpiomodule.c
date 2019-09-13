@@ -27,13 +27,13 @@ typedef struct {
 
 static int GPIO_init(GPIOObject *self, PyObject *args, PyObject *kwargs)
 {
-        static char *kwlist[] = {"pin", "output", "function", "pud", NULL};
+        static char *kwlist[] = {"pin", "output", "function", "pull", NULL};
         unsigned int output = 0;
         unsigned int function = INPUT;
-        unsigned int pud = PUD_DISABLE;
+        unsigned int pull = PUD_DISABLE;
 
         if (PyArg_ParseTupleAndKeywords(args, kwargs, "I|pII", kwlist,
-                &self->pin, &output, &function, &pud) < 0)
+                &self->pin, &output, &function, &pull) < 0)
                 return -1;
 
         if (output)
@@ -44,8 +44,8 @@ static int GPIO_init(GPIOObject *self, PyObject *args, PyObject *kwargs)
         if (function != INPUT)
                 gpio_func(self->pin, function);
 
-        if (pud != PUD_DISABLE)
-                gpio_pud(self->pin, pud);
+        if (pull != PUD_DISABLE)
+                gpio_pud(self->pin, pull);
 
         return 0;
 }
@@ -75,12 +75,12 @@ static PyObject *GPIO_tst(GPIOObject *self)
         else
                 Py_RETURN_FALSE;
 }
-static PyObject *GPIO_pud(GPIOObject *self, PyObject *args)
+static PyObject *GPIO_pull(GPIOObject *self, PyObject *args)
 {
-        unsigned int pud;
-        if (PyArg_ParseTuple(args, "I", &pud) < 0)
+        unsigned int pull;
+        if (PyArg_ParseTuple(args, "I", &pull) < 0)
                 return NULL;
-        gpio_pud(self->pin, pud);
+        gpio_pud(self->pin, pull);
 
         Py_RETURN_NONE;
 }
@@ -89,7 +89,7 @@ static PyMethodDef GPIO_methods[] = {
         {"set", (PyCFunction) GPIO_set, METH_VARARGS, "set pin (HIGH or LOW)"},
         {"clr", (PyCFunction) GPIO_clr, METH_NOARGS, "clear pin"},
         {"tst", (PyCFunction) GPIO_tst, METH_NOARGS, "test pin"},
-        {"pud", (PyCFunction) GPIO_pud, METH_VARARGS, "set pullup/-down"},
+        {"pull", (PyCFunction) GPIO_pull, METH_VARARGS, "set pullup/-down"},
         {NULL}
 };
 
@@ -161,9 +161,9 @@ PyMODINIT_FUNC PyInit_gpio(void)
         PyModule_AddIntConstant(module, "ALT4", ALT4);
         PyModule_AddIntConstant(module, "ALT5", ALT5);
 
-        PyModule_AddIntConstant(module, "PUD_DISABLE", PUD_DISABLE);
-        PyModule_AddIntConstant(module, "PUD_DOWN", PUD_DOWN);
-        PyModule_AddIntConstant(module, "PUD_UP", PUD_UP);
+        PyModule_AddIntConstant(module, "PULL_DISABLE", PUD_DISABLE);
+        PyModule_AddIntConstant(module, "PULL_DOWN", PUD_DOWN);
+        PyModule_AddIntConstant(module, "PULL_UP", PUD_UP);
 
         if (gpio_map() < 0)
                 return PyErr_SetFromErrno(PyExc_Exception);

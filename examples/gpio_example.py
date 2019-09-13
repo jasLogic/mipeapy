@@ -2,7 +2,7 @@ from mipea import gpio
 import time
 
 out = gpio.GPIO(26, True)
-inp = gpio.GPIO(16, pud=gpio.PUD_UP)
+inp = gpio.GPIO(16, pull=gpio.PULL_UP)
 
 while inp.tst():
     out.set()
